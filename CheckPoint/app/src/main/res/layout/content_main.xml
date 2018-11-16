@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_main">
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/checkpoint_banner"
         android:layout_width="245dp"
         android:layout_height="81dp"
         android:layout_marginTop="16dp"
@@ -21,11 +21,12 @@
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="245dp"
+        android:layout_height="52dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/checkpoint_banner" />
 
 </android.support.constraint.ConstraintLayout>
