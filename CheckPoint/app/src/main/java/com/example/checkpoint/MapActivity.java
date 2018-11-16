@@ -1,4 +1,4 @@
-package com.example.innoc.maptest;
+package com.example.checkpoint;
 
 import android.Manifest;
 import android.app.Activity;
@@ -27,8 +27,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.innoc.maptest.models.PlaceInfo;
-import com.example.innoc.maptest.models.UserLocation;
+import com.example.checkpoint.models.PlaceInfo;
+//import com.example.checkpoint.models.UserLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -113,6 +113,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
     private PlaceInfo mPlace;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -248,7 +249,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void getLocationPermission(){
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION};
+                Manifest.permission.ACCESS_COARSE_LOCATION};
 
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){

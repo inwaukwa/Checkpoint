@@ -1,88 +1,79 @@
-package com.example.innoc.maptest;
+package com.example.checkpoint;
 
-import android.Manifest;
+import android.accounts.Account;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.innoc.maptest.models.UserLocation;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.auth.FirebaseUser;
 
 public class AccountActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+    public static final String TAG = "AccountActivity";
     private static final int ERROR_DIALOG_REQUEST = 9001;
 
-    private Button mLogOutBtn;
-
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private UserLocation mUserLocation;
-    private FirebaseFirestore mDb;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public  void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        Button signOutBtn = findViewById(R.id.sign_out_button);
 
-                if(firebaseAuth.getCurrentUser() == null) {
-
-                    startActivity(new Intent(AccountActivity.this, MainActivity.class));
-
-                }
-            }
-        };
-
-        mDb = FirebaseFirestore.getInstance();
-
-        mLogOutBtn = (Button) findViewById(R.id.logOutBtn);
-
-        mLogOutBtn.setOnClickListener(new View.OnClickListener() {
+        signOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAuth.signOut();
+                AuthUI.getInstance()
+                        .signOut(AccountActivity.this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(AccountActivity.this, "Signed Out", Toast.LENGTH_LONG).show();
+
+                                Intent intent = new Intent(AccountActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                        });
             }
         });
+
 
         if(isServicesOK()) {
             init();
         }
-
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
-        mAuth.addAuthStateListener(mAuthListener);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        if(user == null) {
+            Toast.makeText(AccountActivity.this, "Please Sign In", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent (AccountActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
-    private void init(){
-        Button btnMap = (Button) findViewById(R.id.btnMap);
-        btnMap.setOnClickListener(new View.OnClickListener() {
+
+
+
+    private void init() {
+        Button mapBtn = findViewById(R.id.map_button);
+        mapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AccountActivity.this, MapActivity.class);
@@ -91,7 +82,6 @@ public class AccountActivity extends AppCompatActivity {
         });
     }
 
-    //Check if correct play services version is available
     public boolean isServicesOK(){
         Log.d(TAG, "isServicesOK: checking google services version");
 
@@ -111,4 +101,5 @@ public class AccountActivity extends AppCompatActivity {
         }
         return false;
     }
+
 }
